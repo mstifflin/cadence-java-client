@@ -1,13 +1,11 @@
 steps:
   - label: "fossa analyze"
     agents:
-      queue: "init"
-      docker: "*"
+      queue: "buildkite-gcp-medium"
     command: ".buildkite/scripts/fossa.sh"
   - label: "Lint Check"
     agents:
-      queue: "init"
-      docker: "*"
+      queue: "buildkite-gcp-medium"
     command: ".buildkite/scripts/lint.sh"
     plugins:
       - docker-compose#v3.0.0:
@@ -15,8 +13,7 @@ steps:
           config: docker/buildkite/docker-compose.yaml
   - label: ":java: Unit test with test services"
     agents:
-      queue: "workers"
-      docker: "*"
+      queue: "buildkite-gcp-large"
     command: "./gradlew --no-daemon test jacocoTestReport"
     artifact_paths:
       - "build/reports/jacoco/test/*.xml"
@@ -32,8 +29,7 @@ steps:
 
   - label: ":java: Unit test with docker services sticky on"
     agents:
-      queue: "workers"
-      docker: "*"
+      queue: "buildkite-gcp-large"
     command: "./gradlew --no-daemon test"
     timeout_in_minutes: 15
     retry:
@@ -47,8 +43,7 @@ steps:
 
   - label: ":java: Unit test with docker services sticky off"
     agents:
-      queue: "workers"
-      docker: "*"
+      queue: "buildkite-gcp-large"
     command: "./gradlew --no-daemon test"
     timeout_in_minutes: 15
     retry:
@@ -63,8 +58,7 @@ steps:
 
   - label: ":java: Report test coverage"
     agents:
-      queue: "workers"
-      docker: "*"
+      queue: "buildkite-gcp-large"
     command: ".buildkite/scripts/coverage.sh"
     retry:
       automatic:
